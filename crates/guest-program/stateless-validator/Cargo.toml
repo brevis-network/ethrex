@@ -28,7 +28,7 @@ libssz-types = "0.3.0"
 # tag_release.yaml selects the matching ERE release.
 ere-platform-core = { git = "https://github.com/eth-act/ere", tag = "v0.20.0", optional = true }
 
-# zkvm-standards syscall bindings backing the ZisK and SP1 crypto providers. Keeps
+# zkvm-standards syscall bindings backing the ZisK, SP1 and Pico crypto providers. Keeps
 # guest crypto independent of per-SDK patched-crate stacks, so the SP1 guest needs
 # no sp1-patches tags at all.
 zkvm-interface = { git = "https://github.com/eth-act/zkvm-standards", rev = "282cd356c3a0498416bb0619f9c8a347ce9933fb", optional = true }
@@ -67,6 +67,7 @@ ere = ["dep:ere-platform-core"]
 # Crypto providers, one per zkVM.
 zkvm-interface = ["dep:zkvm-interface"]
 sp1 = ["zkvm-interface"]
+pico = ["zkvm-interface"]
 # `ethrex-common/zisk` swaps the tx/block `OnceCell` for the single-threaded
 # `unsync_cell` one on riscv64, matching what `guest-program/bin/zisk` already
 # enables. Without it the two ZisK guests compile different cell types.

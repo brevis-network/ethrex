@@ -3,11 +3,11 @@
 # Prints the zkVM SDK version the stateless-validator guest is built against, for
 # use in release asset names, or the ere release tag the guests are pinned to.
 #
-# The `v` prefix is part of the name: eth-act/ere-guests publishes
-# `stateless-validator-<guest>-<zkvm>-v<version>.{elf,vk}` and republishes guest
-# ELFs verbatim, so dropping it makes our assets not drop-in for that pipeline.
+# The version is written as ere-catalog reports it, since eth-act/ere-guests
+# compares it verbatim and republishes guest ELFs as they are: a release tag keeps
+# its `v` (v6.9.0), and a zkVM ere pins by commit (Pico) has the short hash.
 #
-# The guests reach their SDK through `ere-platform-{zisk,sp1,openvm}`, so the ere
+# The guests reach their SDK through `ere-platform-{zisk,sp1,openvm,pico}`, so the ere
 # tag in their manifests is not the SDK version. The table below instead mirrors
 # what `ere-catalog` resolves at ERE_TAG, and every run first checks the manifests
 # still pin that tag — a silent bump cannot mislabel an artifact.
@@ -18,9 +18,9 @@
 # a second copy of the version is a second thing to keep in sync. A bare `rev` is
 # rejected for the same reason — it cannot be matched against an image tag.
 #
-# Usage: zkvm-version.sh <zisk|sp1|openvm>   -> v6.9.0    (SDK version)
-#        zkvm-version.sh --ere-tag           -> v0.20.0   (git tag)
-#        zkvm-version.sh --ere-tag --docker  -> 0.20.0    (image tag, no `v`)
+# Usage: zkvm-version.sh <zisk|sp1|openvm|pico>  -> v6.9.0    (SDK version)
+#        zkvm-version.sh --ere-tag                -> v0.20.0   (git tag)
+#        zkvm-version.sh --ere-tag --docker       -> 0.20.0    (image tag, no `v`)
 
 set -euo pipefail
 
@@ -32,6 +32,7 @@ zkvm_version() {
         zisk)   echo "v1.4.0-alpha" ;;
         sp1)    echo "v6.9.0" ;;
         openvm) echo "v2.1.0-preview" ;;
+        pico)   echo "613d6ae" ;;
         *)      echo "unknown zkvm: $1" >&2; return 1 ;;
     esac
 }
@@ -48,6 +49,7 @@ MANIFESTS=(
     "$BASE/bin/sp1/Cargo.toml"
     "$BASE/bin/zisk/Cargo.toml"
     "$BASE/bin/openvm/Cargo.toml"
+    "$BASE/bin/pico/Cargo.toml"
 )
 
 # The table above is only valid for ERE_TAG; refuse to guess if anything moved.
@@ -70,4 +72,4 @@ if [[ ${1:-} == "--ere-tag" ]]; then
     exit 0
 fi
 
-zkvm_version "${1:?usage: zkvm-version.sh <zisk|sp1|openvm>|--ere-tag [--docker]}"
+zkvm_version "${1:?usage: zkvm-version.sh <zisk|sp1|openvm|pico>|--ere-tag [--docker]}"

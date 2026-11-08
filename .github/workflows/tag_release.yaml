@@ -166,6 +166,7 @@ jobs:
           - zisk
           - sp1
           - openvm
+          - pico
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout code

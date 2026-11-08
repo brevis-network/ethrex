@@ -309,6 +309,7 @@ update-cargo-lock: ## 📦 Update Cargo.lock files
 	cargo tree --manifest-path crates/guest-program/stateless-validator/bin/sp1/Cargo.toml
 	cargo tree --manifest-path crates/guest-program/stateless-validator/bin/zisk/Cargo.toml
 	cargo tree --manifest-path crates/guest-program/stateless-validator/bin/openvm/Cargo.toml
+	cargo tree --manifest-path crates/guest-program/stateless-validator/bin/pico/Cargo.toml
 	cargo tree --manifest-path crates/l2/tee/quote-gen/Cargo.toml
 	cargo tree --manifest-path crates/vm/levm/bench/revm_comparison/Cargo.toml
 	cargo tree --manifest-path tooling/zkevm_bench/Cargo.toml
@@ -342,6 +343,7 @@ check-cargo-lock: ## 🔍 Check Cargo.lock files are up to date
 	cargo metadata --locked --manifest-path crates/guest-program/stateless-validator/bin/sp1/Cargo.toml > /dev/null
 	cargo metadata --locked --manifest-path crates/guest-program/stateless-validator/bin/zisk/Cargo.toml > /dev/null
 	cargo metadata --locked --manifest-path crates/guest-program/stateless-validator/bin/openvm/Cargo.toml > /dev/null
+	cargo metadata --locked --manifest-path crates/guest-program/stateless-validator/bin/pico/Cargo.toml > /dev/null
 	cargo metadata --locked --manifest-path crates/l2/tee/quote-gen/Cargo.toml > /dev/null
 	cargo metadata --locked --manifest-path crates/vm/levm/bench/revm_comparison/Cargo.toml > /dev/null
 	# zkevm_bench is a standalone workspace (x86-64-only zisk dep); metadata avoids needing the toolchain

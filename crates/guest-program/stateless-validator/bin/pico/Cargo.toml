@@ -1,0 +1,16 @@
+[workspace]
+
+[package]
+version = "23.0.0"
+name = "stateless-validator-ethrex-pico"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+ere-platform-pico = { git = "https://github.com/eth-act/ere", tag = "v0.20.0" }
+
+ethrex-stateless-validator = { path = "../..", features = ["ere", "pico"] }
+
+[profile.release]
+codegen-units = 1
+lto = "fat"

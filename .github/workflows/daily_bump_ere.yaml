@@ -82,7 +82,7 @@ jobs:
           labels: zkevm,dependencies
 
       # PR CI never builds the guest ELFs, and a zkVM SDK bump is exactly what can
-      # break them. A dispatch of the release workflow builds all three guests and
+      # break them. A dispatch of the release workflow builds all four guests and
       # dry-runs the release assets without publishing anything.
       - name: Build the guests on the bump branch
         if: steps.pr.outputs.pull-request-operation == 'created' || steps.pr.outputs.pull-request-operation == 'updated'
