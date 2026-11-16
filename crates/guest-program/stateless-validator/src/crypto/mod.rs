@@ -1,4 +1,4 @@
-//! Crypto provider selection for the guest: zisk/sp1 route through the
+//! Crypto provider selection for the guest: zisk/sp1/pico route through the
 //! zkvm-standards `zkvm-interface` syscalls, openvm through its guest libraries.
 //! This keeps guest crypto decoupled from per-SDK patched-crate stacks: the SDK
 //! versions ere pins, listed in `.github/scripts/zkvm-version.sh`, are not ones the

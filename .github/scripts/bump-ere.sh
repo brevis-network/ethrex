@@ -28,7 +28,7 @@ cd "$ROOT"
 
 VERSION_SCRIPT=.github/scripts/zkvm-version.sh
 BASE=crates/guest-program/stateless-validator
-WORKSPACES=("$BASE" "$BASE/bin/sp1" "$BASE/bin/zisk" "$BASE/bin/openvm")
+WORKSPACES=("$BASE" "$BASE/bin/sp1" "$BASE/bin/zisk" "$BASE/bin/openvm" "$BASE/bin/pico")
 
 die() { echo "bump-ere: $*" >&2; exit 1; }
 
@@ -38,6 +38,7 @@ old_tag=$("$VERSION_SCRIPT" --ere-tag)
 old_sp1=$("$VERSION_SCRIPT" sp1)
 old_zisk=$("$VERSION_SCRIPT" zisk)
 old_openvm=$("$VERSION_SCRIPT" openvm)
+old_pico=$("$VERSION_SCRIPT" pico)
 
 new_tag=${1:-}
 if [[ -z $new_tag ]]; then
@@ -119,6 +120,7 @@ sdk_version() { # <owner crate> <dependency>, as ere-catalog's detect_dep_versio
 new_sp1=$(sdk_version ere-verifier-sp1 sp1-verifier)
 new_zisk=$(sdk_version ere-verifier-zisk zisk-verifier)
 new_openvm=$(sdk_version ere-platform-openvm openvm)
+new_pico=$(sdk_version ere-verifier-pico pico-verifier)
 
 # From here on the tree is edited.
 for workspace in "${WORKSPACES[@]}"; do
@@ -129,11 +131,13 @@ OLD_TAG="$old_tag" NEW_TAG="$new_tag" \
     OLD_SP1="$old_sp1" NEW_SP1="$new_sp1" \
     OLD_ZISK="$old_zisk" NEW_ZISK="$new_zisk" \
     OLD_OPENVM="$old_openvm" NEW_OPENVM="$new_openvm" \
+    OLD_PICO="$old_pico" NEW_PICO="$new_pico" \
     perl -pi -e '
         s/^ERE_TAG=\Q$ENV{OLD_TAG}\E$/ERE_TAG=$ENV{NEW_TAG}/;
         s/^(\s+zisk\)\s+echo ")\Q$ENV{OLD_ZISK}\E"/$1$ENV{NEW_ZISK}"/;
         s/^(\s+sp1\)\s+echo ")\Q$ENV{OLD_SP1}\E"/$1$ENV{NEW_SP1}"/;
         s/^(\s+openvm\)\s+echo ")\Q$ENV{OLD_OPENVM}\E"/$1$ENV{NEW_OPENVM}"/;
+        s/^(\s+pico\)\s+echo ")\Q$ENV{OLD_PICO}\E"/$1$ENV{NEW_PICO}"/;
         s/(-> )\Q$ENV{OLD_SP1}\E(\s+\(SDK version\))/$1$ENV{NEW_SP1}$2/;
         s/(-> )\Q$ENV{OLD_TAG}\E(\s+\(git tag\))/$1$ENV{NEW_TAG}$2/;
         (my $old_image = $ENV{OLD_TAG}) =~ s/^v//;
@@ -151,6 +155,7 @@ rename_assets() {
 rename_assets sp1 "$old_sp1" "$new_sp1"
 rename_assets zisk "$old_zisk" "$new_zisk"
 rename_assets openvm "$old_openvm" "$new_openvm"
+rename_assets pico "$old_pico" "$new_pico"
 
 # Re-resolve each lockfile. `cargo metadata` updates only the entries the manifest
 # change touches, so unrelated dependencies do not move.
@@ -180,10 +185,11 @@ summary=$(
     row SP1 "$old_sp1" "$new_sp1"
     row ZisK "$old_zisk" "$new_zisk"
     row OpenVM "$old_openvm" "$new_openvm"
+    row Pico "$old_pico" "$new_pico"
     echo
     echo "Release notes: https://github.com/eth-act/ere/compare/$old_tag...$new_tag"
     echo
-    echo "**Before merging:** PR CI does not build the guest ELFs. This workflow dispatches \`tag_release.yaml\` on the branch, which builds all three guests and dry-runs the release assets without publishing; check that run. Also review any openvm \`[patch]\` tables and toolchain overrides, which past bumps have broken and this script does not touch."
+    echo "**Before merging:** PR CI does not build the guest ELFs. This workflow dispatches \`tag_release.yaml\` on the branch, which builds all four guests and dry-runs the release assets without publishing; check that run. Also review any openvm \`[patch]\` tables and toolchain overrides, which past bumps have broken and this script does not touch."
 )
 echo "$summary"
 if [[ -n ${BUMP_ERE_SUMMARY:-} ]]; then
